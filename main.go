@@ -179,8 +179,10 @@ func main() {
 			return nil
 		}
 		if !dryRun {
+			_, err = os.Stat(backupPath)
+			backupExists := (err == nil || !os.IsNotExist(err))
 			same, _ = fileContentsAreIdentical(destPath, backupPath)
-			if !same {
+			if backupExists && !same {
 				logError.Printf("ERROR:\trefusing to overwrite backup: %s\n", backupPath)
 				return errRefuse
 			}
